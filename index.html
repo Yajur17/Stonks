@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Portfolio App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Stock Portfolio</h1>
+
+    <!-- User Registration Section -->
+    <section id="registration-section">
+      <input type="text" id="user-name" placeholder="Enter Name">
+      <input type="email" id="user-email" placeholder="Enter Email">
+      <button id="register-btn">Register</button>
+    </section>
+
+    <!-- Search Section (Hidden by Default) -->
+    <section id="stock-search-section" style="display: none;">
+      <div class="search-container">
+        <input type="text" id="stock-search" placeholder="Enter Stock Symbol">
+        <ul id="suggestions-list" style="display: none; list-style-type: none; padding: 0;"></ul>
+        <button id="search-btn">Search</button>
+      </div>
+      <div id="search-results" class="results-container"></div>
+    </section>
+    
+    <!-- Logout Section (Hidden by Default) -->
+    <section id="logout-section" style="display: none;">
+      <button id="logout-btn">Logout</button>
+    </section>
+
+    <!-- Whitelisted Stocks Section -->
+    <section id="whitelist-section">
+      <h2>Your Whitelisted Stocks</h2>
+      <ul id="whitelist" class="whitelist-container"></ul>
+    </section>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
