@@ -1,53 +1,57 @@
-// Try to load the users data from localStorage, or initialize an empty object if not found
-let usersData = JSON.parse(localStorage.getItem('usersData')) || {};
+// Send a request to the Lambda function (API Gateway endpoint)
+async function sendToLambda(method, data) {
+  const response = await fetch('https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/', {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
 
-function saveUsersToLocalStorage() {
-  let localStorageData = JSON.parse(localStorage.getItem('usersData')) || [];
-
-  // Save the updated usersData back to localStorage
-  localStorage.setItem('usersData', JSON.stringify(localStorageData));
-}
-// Add or initialize a user
-function addUser(name, email) {
-  if (!usersData[email]) {
-    // If the user does not exist, add them
-    usersData[email] = {
-      name,
-      email,
-      whitelistedStocks: []
-    };
-    // Save the users data to localStorage
-    saveUsersToLocalStorage();
-    console.log('User added:', usersData[email]); // Debugging log
+  const result = await response.json();
+  if (response.ok) {
+    return result;
   } else {
-    console.log('User already exists:', usersData[email]);
-  }
-  return usersData[email];
-}
-
-// Fetch an existing user's data
-function getUser(email) {
-  console.log('Fetching user with email:', email);  // Debugging log
-  console.log('Current usersData:', usersData);  // Check what usersData looks like
-
-  // Return the user if found, or null if not
-  return usersData[email] || null;
-}
-
-// Save usersData to localStorage after changes
-function updateUser(email, updatedUser) {
-  if (usersData[email]) {
-    // Update the user in the local usersData object
-    usersData[email] = updatedUser;
-
-    // Save the updated usersData back to localStorage
-    saveUsersToLocalStorage();
-    console.log('User updated:', usersData[email]); // Debugging log
-  } else {
-    console.error(`User with email ${email} does not exist.`);
+    throw new Error(result.message || 'An error occurred');
   }
 }
 
+// Add or initialize a user in DynamoDB
+async function addUser(name, email) {
+  const userData = {
+    name,
+    email,
+    whitelistedStocks: []
+  };
 
-// Export the functions
-export { addUser, getUser, saveUsersToLocalStorage };
+  try {
+    const result = await sendToLambda('POST', userData); // Send the user data to Lambda
+    console.log('User added:', result); // Debugging log
+  } catch (error) {
+    console.error('Error adding user:', error);
+  }
+}
+
+// Fetch an existing user's data from DynamoDB
+async function getUser(username) {
+  try {
+    const result = await sendToLambda('GET', { username }); // Send request to Lambda to get the user by username
+    console.log('User fetched:', result); // Debugging log
+    return result;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
+}
+
+// Update the user in DynamoDB (update whitelist)
+async function updateUser(username, updatedUser) {
+  try {
+    const result = await sendToLambda('PUT', { username, updatedUser }); // Send request to Lambda to update the user
+    console.log('User updated:', result); // Debugging log
+  } catch (error) {
+    console.error('Error updating user:', error);
+  }
+}
+
+export { addUser, getUser, updateUser };

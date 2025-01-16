@@ -1,4 +1,4 @@
-import { addUser, getUser } from './user.js';
+import { addUser, getUser, updateUser } from './user.js';
 
 const apiKey = 'b1cc189903msh434bedfa664658dp1790e2jsneaf931c77fc7'; // Your RapidAPI key
 const apiHost = 'latest-stock-price.p.rapidapi.com';
@@ -14,6 +14,26 @@ fetch('symbol.json')
   .catch((error) => {
     console.error("Failed to load stock data", error);
   });
+
+function sendToLambda(userData) {
+  // API Gateway URL for Lambda
+  const apiUrl = 'https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/'; 
+
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userData) // Send the entire user data
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Data saved successfully:', data);
+  })
+  .catch(error => {
+    console.error('Error saving data to DynamoDB:', error);
+  });
+}
 
 // Helper functions
 function displaySuggestions(stocks) {
@@ -90,8 +110,8 @@ function fetchStockDataForMultipleSymbols(stocks) {
 
 // Whitelist a stock for the current user
 function whitelistStock(symbol, name, price) {
-  const email = document.getElementById('user-email').value.trim();
-  const user = getUser(email);
+  const username = document.getElementById('user-name').value.trim();
+  const user = getUser(username);
 
   if (!user) {
     alert('Please register first.');
@@ -112,10 +132,8 @@ function whitelistStock(symbol, name, price) {
   const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   user.whitelistedStocks.push({ symbol, name, price, date });
 
-  // Save updated user back to localStorage
-  const usersData = JSON.parse(localStorage.getItem('usersData')) || {};
-  usersData[email] = user; // Update the user data with the new whitelist
-  localStorage.setItem('usersData', JSON.stringify(usersData));
+  // Save updated user back to Lambda
+  sendToLambda(user);
 
   // Update the DOM with the new whitelist item
   const listItem = createWhitelistItem(symbol, name, price, date);
@@ -141,8 +159,8 @@ function createWhitelistItem(symbol, name, price, date) {
 
 // Unwhitelist a stock for the current user
 function unwhitelistStock(symbol) {
-  const email = document.getElementById('user-email').value.trim();
-  const user = getUser(email);
+  const username = document.getElementById('user-name').value.trim();
+  const user = getUser(username);
 
   if (!user) {
     alert('Please register first.');
@@ -150,12 +168,15 @@ function unwhitelistStock(symbol) {
   }
 
   user.whitelistedStocks = user.whitelistedStocks.filter(stock => stock.symbol !== symbol);
-  loadWhitelistedStocksForUser(email);
+
+  sendToLambda(user);
+
+  loadWhitelistedStocksForUser(username);
 }
 
 // Load whitelisted stocks for the current user
-function loadWhitelistedStocksForUser(email) {
-  const user = getUser(email);
+function loadWhitelistedStocksForUser(username) {
+  const user = getUser(username);
   const whitelist = document.getElementById('whitelist');
   whitelist.innerHTML = '';
 
@@ -196,112 +217,70 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Handle the logout functionality
-// Simplified logout function
-function handleLogout() {
-  // Clear user input fields
-  document.getElementById('user-name').value = '';
-  document.getElementById('user-email').value = '';
+  function handleLogout() {
+    // Clear user input fields
+    document.getElementById('user-name').value = '';
+    document.getElementById('user-email').value = '';
 
-  // Show registration form and hide other sections
-  document.getElementById('registration-section').style.display = 'block';
-  document.getElementById('stock-search-section').style.display = 'none';
-  document.getElementById('logout-section').style.display = 'none';
-  document.getElementById('whitelist-section').style.display = 'none';
+    // Show registration form and hide other sections
+    document.getElementById('registration-section').style.display = 'block';
+    document.getElementById('stock-search-section').style.display = 'none';
+    document.getElementById('logout-section').style.display = 'none';
+    document.getElementById('whitelist-section').style.display = 'none';
 
-  // Clear the whitelist
-  document.getElementById('whitelist').innerHTML = '';
+    // Clear the whitelist
+    document.getElementById('whitelist').innerHTML = '';
 
-  // Clear search field and suggestions
-  document.getElementById('stock-search').value = '';
-  document.getElementById('suggestions-list').innerHTML = '';
-  document.getElementById('suggestions-list').style.display = 'none';
+    // Clear search field and suggestions
+    document.getElementById('stock-search').value = '';
+    document.getElementById('suggestions-list').innerHTML = '';
+    document.getElementById('suggestions-list').style.display = 'none';
 
-  alert('You have been logged out.');
-}
+    alert('You have been logged out.');
+  }
 
-// Add event listener for logout button
-document.getElementById('logout-btn').addEventListener('click', handleLogout);
+  // Add event listener for logout button
+  document.getElementById('logout-btn').addEventListener('click', handleLogout);
 
-document.getElementById('register-btn').addEventListener('click', handleRegister);
-
+  document.getElementById('register-btn').addEventListener('click', handleRegister);
 
   // Register user functionality
-function handleRegister() {
-
-    const name = userNameInput.value.trim();
+  function handleRegister() {
+    const username = userNameInput.value.trim();
     const email = userEmailInput.value.trim();
 
-    if (!name || !email) {
-      alert('Please enter both name and email.');
+    if (!username || !email) {
+      alert('Please enter both username and email.');
       return;
     }
 
-    const existingUser = getUser(email);
-    
-    
-  if (existingUser) {
-    alert(`Welcome back, ${existingUser.name}!`);
-    
-    // Show previously whitelisted stocks if any
-    if (existingUser.whitelistedStocks && existingUser.whitelistedStocks.length > 0) {
-      const whitelist = document.getElementById('whitelist');
-      whitelist.innerHTML = ''; // Clear any existing items
-      existingUser.whitelistedStocks.forEach(stock => {
-        const listItem = createWhitelistItem(stock.symbol, stock.name, stock.price, stock.date);
-        whitelist.appendChild(listItem);
-      });
+    const existingUser = getUser(username);
+
+    if (existingUser) {
+      alert(`Welcome back, ${existingUser.name}!`);
+
+      // Show previously whitelisted stocks if any
+      if (existingUser.whitelistedStocks && existingUser.whitelistedStocks.length > 0) {
+        const whitelist = document.getElementById('whitelist');
+        whitelist.innerHTML = ''; // Clear any existing items
+        existingUser.whitelistedStocks.forEach(stock => {
+          const listItem = createWhitelistItem(stock.symbol, stock.name, stock.price, stock.date);
+          whitelist.appendChild(listItem);
+        });
       }
       showMainContent();
-    
-    // Clear the search input field
-    document.getElementById('stock-search').value = '';  // Clear the search field
-    
-    const searchResultsContainer = document.getElementById('search-results');
-    searchResultsContainer.innerHTML = '';  // Clear the search results
-    
-    return;
+      return;
     }
-    
 
-    const newUser = addUser(name, email);
-  newUser.whitelistedStocks = [];  // Ensure the whitelist is empty for the new user
-  alert(`Registered successfully! Welcome, ${newUser.name}.`);
+    const newUser = addUser(username, email);
+    newUser.whitelistedStocks = [];  // Ensure the whitelist is empty for the new user
+    alert(`Registered successfully! Welcome, ${newUser.name}.`);
 
-  // Clear the whitelist section for the new user
-  const whitelist = document.getElementById('whitelist');
-  whitelist.innerHTML = '';  // Clear any existing whitelisted items
+    // Clear the whitelist section for the new user
+    const whitelist = document.getElementById('whitelist');
+    whitelist.innerHTML = '';
 
-const searchResultsContainer = document.getElementById('search-results');
-    searchResultsContainer.innerHTML = '';  // Clear the search results
-    
     showMainContent();
-    return;
-
-  // Show main content after registration
-  showMainContent();
-  
-  // Clear the search input field
-  document.getElementById('stock-search').value = ''; 
-  };
-
-  // Initially show the registration form if the user is not logged in
-  showRegistrationForm();
-
-  // Stock search functionality
-  stockSearchInput.addEventListener('input', function () {
-  const query = stockSearchInput.value.trim().toUpperCase();
-
-  if (!query) {
-    document.getElementById('suggestions-list').style.display = 'none';
-    return;
   }
-
-    // Filter stocks based on the search query
-    const filteredStocks = stocksData.filter(stock => {
-    const symbol = stock.Symbol ? stock.Symbol.toUpperCase() : '';
-    return symbol.includes(query);
-  });
-
-  displaySuggestions(filteredStocks);
 });
-});
+
