@@ -3,7 +3,8 @@ async function sendToLambda(method, data) {
   const response = await fetch('https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/', {
     method: method,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', 
     },
     body: JSON.stringify(data)
   });
@@ -56,6 +57,7 @@ async function getDataFromLambda(params) {
           method: "GET", // Use GET to retrieve data
           headers: {
               "Content-Type": "application/json", // Specify JSON format
+              'Access-Control-Allow-Origin': '*', 
           },
       });
 

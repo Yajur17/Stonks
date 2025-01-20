@@ -22,7 +22,8 @@ function sendToLambda(userData) {
   fetch(apiUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', 
     },
     body: JSON.stringify(userData) // Send the entire user data
   })
@@ -47,6 +48,7 @@ async function getDataFromLambda(params) {
           method: "GET", // Use GET to retrieve data
           headers: {
               "Content-Type": "application/json", // Specify JSON format
+              'Access-Control-Allow-Origin': '*', 
           },
       });
 
