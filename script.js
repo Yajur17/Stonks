@@ -35,6 +35,35 @@ function sendToLambda(userData) {
   });
 }
 
+async function getDataFromLambda(params) {
+  const lambdaUrl = "https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/"; // Replace with your API Gateway endpoint URL
+
+
+  const url = new URL(lambdaUrl);
+  url.search = new URLSearchParams(params).toString();
+
+  try {
+      const response = await fetch(url, {
+          method: "GET", // Use GET to retrieve data
+          headers: {
+              "Content-Type": "application/json", // Specify JSON format
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Data received from Lambda:", result);
+      return result;
+  } catch (error) {
+      console.error("Error retrieving data from Lambda:", error);
+      throw error;
+  }
+}
+
+
 // Helper functions
 function displaySuggestions(stocks) {
   const suggestionsList = document.getElementById('suggestions-list');

@@ -35,7 +35,7 @@ async function addUser(name, email) {
 // Fetch an existing user's data from DynamoDB
 async function getUser(username) {
   try {
-    const result = await sendToLambda('GET', { username }); // Send request to Lambda to get the user by username
+    const result = await getDataFromLambda({ username }); // Send GET request to Lambda with username
     console.log('User fetched:', result); // Debugging log
     return result;
   } catch (error) {
@@ -43,6 +43,35 @@ async function getUser(username) {
     return null;
   }
 }
+
+async function getDataFromLambda(params) {
+  const lambdaUrl = "https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/"; // Replace with your API Gateway endpoint URL
+
+
+  const url = new URL(lambdaUrl);
+  url.search = new URLSearchParams(params).toString();
+
+  try {
+      const response = await fetch(url, {
+          method: "GET", // Use GET to retrieve data
+          headers: {
+              "Content-Type": "application/json", // Specify JSON format
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Data received from Lambda:", result);
+      return result;
+  } catch (error) {
+      console.error("Error retrieving data from Lambda:", error);
+      throw error;
+  }
+}
+
 
 // Update the user in DynamoDB (update whitelist)
 async function updateUser(username, updatedUser) {
