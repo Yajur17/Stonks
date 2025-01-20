@@ -17,7 +17,7 @@ fetch('symbol.json')
 
 function sendToLambda(userData) {
   // API Gateway URL for Lambda
-  const apiUrl = 'https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/'; 
+  const apiUrl = 'https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/'; 
 
   fetch(apiUrl, {
     method: 'POST',
@@ -37,7 +37,7 @@ function sendToLambda(userData) {
 }
 
 async function getDataFromLambda(params) {
-  const lambdaUrl = "https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/"; // Replace with your API Gateway endpoint URL
+  const lambdaUrl = "https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/"; // Replace with your API Gateway endpoint URL
 
 
   const url = new URL(lambdaUrl);

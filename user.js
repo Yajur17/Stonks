@@ -1,6 +1,6 @@
 // Send a request to the Lambda function (API Gateway endpoint)
 async function sendToLambda(method, data) {
-  const response = await fetch('https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/', {
+  const response = await fetch('https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/', {
     method: method,
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ async function getUser(username) {
 }
 
 async function getDataFromLambda(params) {
-  const lambdaUrl = "https://2nfo3hb4svry26aqbg4ysd7t5i0mqwdf.lambda-url.ap-south-1.on.aws/"; // Replace with your API Gateway endpoint URL
+  const lambdaUrl = "https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/"; // Replace with your API Gateway endpoint URL
 
 
   const url = new URL(lambdaUrl);
