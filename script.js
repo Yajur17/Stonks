@@ -12,6 +12,7 @@ async function fetchUserFromLambda(username) {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
       },
+      body: JSON.stringify({ httpMethod: 'GET' }), // Include httpMethod
     });
 
     if (!response.ok) {
@@ -35,7 +36,7 @@ async function registerUserToLambda(userData) {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify(userData),
+      body: JSON.stringify({ ...userData, httpMethod: 'POST' }), // Include httpMethod
     });
 
     if (!response.ok) {
