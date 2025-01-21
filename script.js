@@ -6,7 +6,6 @@ async function fetchUserFromLambda(username) {
   try {
     const url = new URL(lambdaUrl);
     url.searchParams.append('username', username);
-    url.searchParams.append('httpMethod', 'GET');
 
     const response = await fetch(url, {
       method: 'GET',
@@ -37,8 +36,8 @@ async function registerUserToLambda(userData) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ ...userData, httpMethod: 'POST' }), // Include httpMethod
-    });
+      body: JSON.stringify({userData}),
+    })
 
     if (!response.ok) {
       throw new Error(`Failed to register user: ${response.status}`);
