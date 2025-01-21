@@ -1,18 +1,41 @@
-// Send a request to the Lambda function (API Gateway endpoint)
-async function sendToLambda(method, data) {
-  const response = await fetch('https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/', {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json', // Specify JSON format
-    },
-    body: JSON.stringify(data), // Include body for POST/PUT
-  });
+// Base URL for the Lambda function
+const lambdaUrl = 'https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/';
 
-  const result = await response.json();
-  if (response.ok) {
+// Send a request to the Lambda function (API Gateway endpoint)
+async function sendToLambda(method, data = null, params = null) {
+  try {
+    const url = new URL(lambdaUrl);
+
+    // Append query parameters for GET requests
+    if (params) {
+      url.search = new URLSearchParams(params).toString();
+    }
+
+    const options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    // Include body for POST/PUT methods
+    if (data && (method === 'POST' || method === 'PUT')) {
+      options.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(url, options);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || `HTTP error! status: ${response.status}`);
+    }
+
+    console.log(`Lambda ${method} response:`, result); // Debugging log
     return result;
-  } else {
-    throw new Error(result.message || 'An error occurred');
+  } catch (error) {
+    console.error(`Error in Lambda ${method} request:`, error);
+    throw error;
   }
 }
 
@@ -25,18 +48,20 @@ async function addUser(name, email) {
   };
 
   try {
-    const result = await sendToLambda('POST', userData); // Send the user data to Lambda
-    console.log('User added:', result); // Debugging log
+    const result = await sendToLambda('POST', userData);
+    console.log('User added:', result);
+    return result;
   } catch (error) {
     console.error('Error adding user:', error);
+    throw error;
   }
 }
 
 // Fetch an existing user's data from DynamoDB
 async function getUser(username) {
   try {
-    const result = await getDataFromLambda({ username }); // Send GET request to Lambda with username
-    console.log('User fetched:', result); // Debugging log
+    const result = await sendToLambda('GET', null, { username });
+    console.log('User fetched:', result);
     return result;
   } catch (error) {
     console.error('Error fetching user:', error);
@@ -44,41 +69,15 @@ async function getUser(username) {
   }
 }
 
-async function getDataFromLambda(params) {
-  const lambdaUrl = "https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/";
-
-  const url = new URL(lambdaUrl);
-  url.search = new URLSearchParams(params).toString();
-
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json", // Specify JSON format
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log("Data received from Lambda:", result);
-    return result;
-  } catch (error) {
-    console.error("Error retrieving data from Lambda:", error);
-    throw error;
-  }
-}
-
-
-// Update the user in DynamoDB (update whitelist)
+// Update the user in DynamoDB (e.g., update whitelist)
 async function updateUser(username, updatedUser) {
   try {
-    const result = await sendToLambda('PUT', { username, updatedUser }); // Send request to Lambda to update the user
-    console.log('User updated:', result); // Debugging log
+    const result = await sendToLambda('PUT', { username, updatedUser });
+    console.log('User updated:', result);
+    return result;
   } catch (error) {
     console.error('Error updating user:', error);
+    throw error;
   }
 }
 
