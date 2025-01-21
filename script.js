@@ -1,10 +1,12 @@
 const lambdaUrl = 'https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/';
 
 // Fetch user data from Lambda
+// Fetch user data from Lambda
 async function fetchUserFromLambda(username) {
   try {
     const url = new URL(lambdaUrl);
     url.searchParams.append('username', username);
+    url.searchParams.append('httpMethod', 'GET'); // Include httpMethod in query params
 
     const response = await fetch(url, {
       method: 'GET',
@@ -12,7 +14,6 @@ async function fetchUserFromLambda(username) {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
       },
-      body: JSON.stringify({ httpMethod: 'GET' }), // Include httpMethod
     });
 
     if (!response.ok) {
@@ -26,6 +27,7 @@ async function fetchUserFromLambda(username) {
     return null;
   }
 }
+
 
 // Register user in Lambda
 async function registerUserToLambda(userData) {
