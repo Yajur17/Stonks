@@ -45,46 +45,18 @@ async function sendToLambda(method, data = null, params = null) {
   }
 }
 
-// Add or initialize a user in DynamoDB
 async function addUser(name, email) {
-  const userData = {
-    name,
-    email,
-    whitelistedStocks: [],
-  };
-
-  try {
-    const result = await sendToLambda('POST', userData);
-    console.log('User added:', result);
-    return result;
-  } catch (error) {
-    console.error('Error adding user:', error);
-    throw error;
-  }
+  const userData = { name, email, whitelistedStocks: [] };
+  return await sendToLambda('POST', userData);
 }
 
-// Fetch an existing user's data from DynamoDB
 async function getUser(username) {
-  try {
-    const result = await sendToLambda('GET', null, { username });
-    console.log('User fetched:', result);
-    return result;
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    return null;
-  }
+  return await sendToLambda('GET', null, { username });
 }
 
-// Update the user in DynamoDB (e.g., update whitelist)
 async function updateUser(username, updatedUser) {
-  try {
-    const result = await sendToLambda('PUT', { username, updatedUser });
-    console.log('User updated:', result);
-    return result;
-  } catch (error) {
-    console.error('Error updating user:', error);
-    throw error;
-  }
+  const updateData = { username, updatedUser };
+  return await sendToLambda('PUT', updateData);
 }
 
 export { addUser, getUser, updateUser };
