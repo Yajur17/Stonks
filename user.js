@@ -3,10 +3,9 @@ async function sendToLambda(method, data) {
   const response = await fetch('https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/', {
     method: method,
     headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', 
+      'Content-Type': 'application/json', // Specify JSON format
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data), // Include body for POST/PUT
   });
 
   const result = await response.json();
@@ -22,7 +21,7 @@ async function addUser(name, email) {
   const userData = {
     name,
     email,
-    whitelistedStocks: []
+    whitelistedStocks: [],
   };
 
   try {
@@ -46,34 +45,30 @@ async function getUser(username) {
 }
 
 async function getDataFromLambda(params) {
-  const lambdaUrl = "https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/"; // Replace with your API Gateway endpoint URL
-
-
+  const lambdaUrl = 'https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/'; // Replace with your API Gateway endpoint URL
   const url = new URL(lambdaUrl);
   url.search = new URLSearchParams(params).toString();
 
   try {
-      const response = await fetch(url, {
-          method: "GET", // Use GET to retrieve data
-          headers: {
-              "Content-Type": "application/json", // Specify JSON format
-              'Access-Control-Allow-Origin': '*', 
-          },
-      });
+    const response = await fetch(url, {
+      method: 'GET', // Use GET to retrieve data
+      headers: {
+        'Content-Type': 'application/json', // Specify JSON format
+      },
+    });
 
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-      const result = await response.json();
-      console.log("Data received from Lambda:", result);
-      return result;
+    const result = await response.json();
+    console.log('Data received from Lambda:', result);
+    return result;
   } catch (error) {
-      console.error("Error retrieving data from Lambda:", error);
-      throw error;
+    console.error('Error retrieving data from Lambda:', error);
+    throw error;
   }
 }
-
 
 // Update the user in DynamoDB (update whitelist)
 async function updateUser(username, updatedUser) {
