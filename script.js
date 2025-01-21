@@ -6,6 +6,7 @@ async function fetchUserFromLambda(username) {
   try {
     const url = new URL(lambdaUrl);
     url.searchParams.append('username', username);
+    url.searchParams.append('httpMethod', 'GET');
 
     const response = await fetch(url, {
       method: 'GET',
