@@ -6,14 +6,13 @@ async function fetchUserFromLambda(username) {
   try {
     const url = new URL(lambdaUrl);
     url.searchParams.append('username', username);
-    url.searchParams.append('httpMethod', 'GET'); // Include httpMethod in query params
 
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
       },
+      mode: 'cors', // Enable CORS
     });
 
     if (!response.ok) {
@@ -35,8 +34,7 @@ async function registerUserToLambda(userData) {
     const response = await fetch(lambdaUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ ...userData, httpMethod: 'POST' }), // Include httpMethod
     });
