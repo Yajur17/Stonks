@@ -8,7 +8,10 @@ async function sendToLambda(method, data = null, params = null) {
 
     // Append query parameters for GET requests
     if (params) {
-      url.search = new URLSearchParams(params).toString();
+      url.search = new URLSearchParams({
+        ...params,
+        httpMethod: method, // Add httpMethod to query parameters
+      }).toString();
     }
 
     const options = {
@@ -20,7 +23,10 @@ async function sendToLambda(method, data = null, params = null) {
 
     // Include body for POST/PUT methods
     if (data && (method === 'POST' || method === 'PUT')) {
-      options.body = JSON.stringify(data);
+      options.body = JSON.stringify({
+        ...data,
+        httpMethod: method, // Explicitly add the HTTP method to the request body
+      });
     }
 
     const response = await fetch(url, options);
