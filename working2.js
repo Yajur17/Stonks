@@ -2,7 +2,7 @@ import { addUser, getUser } from './user.js';
 
 const apiKey = 'b1cc189903msh434bedfa664658dp1790e2jsneaf931c77fc7'; // Your RapidAPI key
 const apiHost = 'latest-stock-price.p.rapidapi.com';
-const lambdaUrl = 'https://qh5z4rctsc5dkrbtea5kdlttve0pdcrp.lambda-url.ap-south-1.on.aws/'; // Replace with your Lambda function URL
+const lambdaUrl = 'YOUR_LAMBDA_URL_HERE'; // Replace with your Lambda function URL
 
 let stocksData = [];
 
