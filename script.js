@@ -249,12 +249,15 @@ async function registerUserToLambda(userData) {
 
 // DOM interaction
 document.addEventListener('DOMContentLoaded', () => {
-  const userNameInput = document.getElementById('user-name');
-  const userEmailInput = document.getElementById('user-email');
   const registerBtn = document.getElementById('register-btn');
   const logoutBtn = document.getElementById('logout-btn');
+  const stockSearchSection = document.getElementById('stock-search-section');
+  const logoutSection = document.getElementById('logout-section');
+  const registrationSection = document.getElementById('registration-section');
   const whitelistSection = document.getElementById('whitelist-section');
-  const whitelist = document.getElementById('whitelist');
+  const userNameInput = document.getElementById('user-name');
+  const userEmailInput = document.getElementById('user-email');
+  const stockSearchInput = document.getElementById('stock-search');
 
   // UI helper functions
   function showRegistrationForm() {
