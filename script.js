@@ -6,7 +6,7 @@ const apiHost = 'latest-stock-price.p.rapidapi.com';
 let stocksData = [];
 
 // Fetch stock symbols and names
-fetch('symbol.json')
+fetch('./symbol.json')
   .then((response) => response.json())
   .then((data) => {
     stocksData = data;
