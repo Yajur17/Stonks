@@ -194,7 +194,8 @@ function fetchStockDataForMultipleSymbols(stocks) {
       resultsContainer.innerHTML = '<p>Failed to fetch stock data. Please try again later.</p>';
     });
   }
-});
+
+
 function loadWhitelistedStocksForUser(username) {
   const user = getUser(username);
   const whitelist = document.getElementById('whitelist');
