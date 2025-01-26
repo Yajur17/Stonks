@@ -151,7 +151,7 @@ function unwhitelistStock(symbol) {
 }
 
 function fetchStockDataForMultipleSymbols(stocks) {
-    resultsContainer.innerHTML = '';
+   const resultsContainer = document.getElementById('search-results');
 
     const symbols = stocks.map(stock => stock.nse_symbol).join(',');
 
