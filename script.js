@@ -5,34 +5,35 @@ const apiHost = 'latest-stock-price.p.rapidapi.com';
 
 let stocksData = [];
 
-// Fetch stock symbols and names
-fetch('./symbol.json')
-  .then((response) => response.json())
-  .then((data) => {
-    stocksData = data;
+// Fetch stock symbols and names from symbol.json
+fetch('symbol.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Failed to load stock symbols: ${response.statusText}`);
+    }
+    return response.json();
   })
-  .catch((error) => {
-    console.error("Failed to load stock data", error);
-  });
+  .then(data => {
+    stocksData = data;
+    console.log('Loaded Stocks Data:', stocksData); // Debugging
+  })
+  .catch(error => console.error('Error fetching stock symbols:', error));
+
 
 // Helper functions
-function displaySuggestions(stocks) {
+function displaySuggestions(filteredStocks) {
   const suggestionsList = document.getElementById('suggestions-list');
   suggestionsList.innerHTML = '';
 
-  if (stocks.length === 0) {
-    suggestionsList.style.display = 'none';
+  if (filteredStocks.length === 0) {
+    suggestionsList.innerHTML = '<li>No results found.</li>';
     return;
   }
 
-  stocks.forEach((stock) => {
+  filteredStocks.forEach(stock => {
     const suggestionItem = document.createElement('li');
-    suggestionItem.textContent = `${stock.Symbol} - ${stock.Name}`;
-    suggestionItem.onclick = function () {
-      document.getElementById('stock-search').value = stock.Symbol;
-      suggestionsList.style.display = 'none';
-      fetchStockDataForMultipleSymbols([stock]);
-    };
+    suggestionItem.textContent = `${stock.Name} (${stock.Symbol})`;
+    suggestionItem.onclick = () => fetchStockDataForMultipleSymbols([stock]);
     suggestionsList.appendChild(suggestionItem);
   });
 
@@ -337,30 +338,24 @@ document.addEventListener('DOMContentLoaded', () => {
     return listItem;
   }
 
-  // Unwhitelist a stock
-  async function unwhitelistStock(symbol) {
-    const username = userNameInput.value.trim();
-    const user = await fetchUserFromLambda(username);
+  // Search stock functionality
+  stockSearchInput.addEventListener('input', () => {
+    const query = stockSearchInput.value.trim().toLowerCase();
 
-    if (!user) {
-      alert('Please register first.');
+    if (!query) {
+      displaySuggestions([]);
       return;
     }
 
-    user.source.whitelistedStocks = user.source.whitelistedStocks.filter(stock => stock.symbol !== symbol);
+    const filteredStocks = stocksData.filter(stock => 
+      stock.Name.toLowerCase().includes(query) || 
+      stock.Symbol.toLowerCase().includes(query)
+    );
 
-    const updateResult = await registerUserToLambda(user);
-    if (updateResult) {
-      alert(`${symbol} has been removed from your whitelist.`);
-      whitelist.innerHTML = ''; // Clear and reload whitelist
-      user.source.whitelistedStocks.forEach(stock => {
-        const listItem = createWhitelistItem(stock.symbol, stock.name, stock.price, stock.date);
-        whitelist.appendChild(listItem);
-      });
-    } else {
-      alert('Failed to update whitelist. Please try again.');
-    }
-  }
+    displaySuggestions(filteredStocks);
+  });
 
+  // Initialize the UI with the registration form
   showRegistrationForm();
 });
+
