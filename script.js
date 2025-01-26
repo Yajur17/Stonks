@@ -159,6 +159,8 @@ function unwhitelistStock(symbol) {
 function fetchStockDataForMultipleSymbols(stocks) {
    const resultsContainer = document.getElementById('search-results');
 
+   resultsContainer.innerHTML = '';
+
     const symbols = stocks.map(stock => stock.nse_symbol).join(',');
 
     const url = `https://latest-stock-price.p.rapidapi.com/equities-enhanced?Symbols=${encodeURIComponent(symbols)}`;
