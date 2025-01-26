@@ -22,7 +22,7 @@ fetch('./symbol.json')
 
 // Helper functions
  function displaySuggestions(filteredStocks) {
-
+const suggestionsList = document.getElementById('suggestions-list');  
    if (!suggestionsList) return;
    
     suggestionsList.innerHTML = ''; // Clear previous suggestions
