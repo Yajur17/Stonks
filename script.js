@@ -22,10 +22,10 @@ fetch('./symbol.json')
 
 // Helper functions
 function displaySuggestions(filteredStocks) {
-    suggestionsList.innerHTML = '';
+    suggestions-list.innerHTML = '';
 
     if (filteredStocks.length === 0) {
-      suggestionsList.innerHTML = '<li>No results found.</li>';
+      suggestions-list.innerHTML = '<li>No results found.</li>';
       return;
     }
 
@@ -34,12 +34,12 @@ function displaySuggestions(filteredStocks) {
       suggestionItem.textContent = `${stock.Name} (${stock.Symbol})`;
       suggestionItem.onclick = () => {
         fetchStockDataForMultipleSymbols([stock]);
-        suggestionsList.style.display = 'none'; // Close the suggestions after selecting
+         suggestions-list.style.display = 'none'; // Close the suggestions after selecting
       };
-      suggestionsList.appendChild(suggestionItem);
+       suggestions-list.appendChild(suggestionItem);
     });
 
-    suggestionsList.style.display = 'block';
+     suggestions-list.style.display = 'block';
   }
 
 function whitelistStock(symbol, name, price) {
