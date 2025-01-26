@@ -6,7 +6,7 @@ const apiHost = 'latest-stock-price.p.rapidapi.com';
 let stocksData = [];
 
 // Fetch stock symbols and names from symbol.json
-fetch('symbol.json')
+fetch('./symbol.json')
   .then(response => {
     if (!response.ok) {
       throw new Error(`Failed to load stock symbols: ${response.statusText}`);
@@ -339,21 +339,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Search stock functionality
-  stockSearchInput.addEventListener('input', () => {
-    const query = stockSearchInput.value.trim().toLowerCase();
-
-    if (!query) {
-      displaySuggestions([]);
-      return;
-    }
-
-    const filteredStocks = stocksData.filter(stock => 
-      stock.Name.toLowerCase().includes(query) || 
-      stock.Symbol.toLowerCase().includes(query)
-    );
-
-    displaySuggestions(filteredStocks);
-  });
+stockSearchInput.addEventListener('input', () => {
+  const searchValue = stockSearchInput.value.trim().toLowerCase();
+  const filteredStocks = stocksData.filter(stock => 
+    (stock.Name?.toLowerCase() || '').includes(searchValue) ||
+    (stock.Symbol?.toLowerCase() || '').includes(searchValue)
+  );
+  displaySuggestions(filteredStocks);
+});
 
   // Initialize the UI with the registration form
   showRegistrationForm();
