@@ -22,6 +22,9 @@ fetch('./symbol.json')
 
 // Helper functions
  function displaySuggestions(filteredStocks) {
+
+   if (!suggestionsList) return;
+   
     suggestionsList.innerHTML = ''; // Clear previous suggestions
 
     if (filteredStocks.length === 0) {
