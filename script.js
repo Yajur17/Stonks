@@ -21,11 +21,11 @@ fetch('./symbol.json')
 
 
 // Helper functions
-function displaySuggestions(filteredStocks) {
-    suggestionsList.innerHTML = '';  // Fixed the variable name
+ function displaySuggestions(filteredStocks) {
+    suggestionsList.innerHTML = ''; // Clear previous suggestions
 
     if (filteredStocks.length === 0) {
-      suggestionsList.innerHTML = '<li>No results found.</li>';  // Fixed the variable name
+      suggestionsList.innerHTML = '<li>No results found.</li>';
       return;
     }
 
@@ -34,13 +34,14 @@ function displaySuggestions(filteredStocks) {
       suggestionItem.textContent = `${stock.Name} (${stock.Symbol})`;
       suggestionItem.onclick = () => {
         fetchStockDataForMultipleSymbols([stock]);
-         suggestionsList.style.display = 'none'; // Close the suggestions after selecting
+        suggestionsList.style.display = 'none'; // Close the suggestions after selecting
       };
-       suggestionsList.appendChild(suggestionItem);  // Fixed the variable name
+      suggestionsList.appendChild(suggestionItem);
     });
 
-     suggestionsList.style.display = 'block';  // Fixed the variable name
-}
+    suggestionsList.style.display = 'block';  // Show suggestions
+  }
+
 
 function whitelistStock(symbol, name, price) {
   const username = document.getElementById('user-name').value.trim();
@@ -255,17 +256,18 @@ async function registerUserToLambda(userData) {
 
 // DOM interaction
 document.addEventListener('DOMContentLoaded', () => {
+const suggestionsList = document.getElementById('suggestions-list');  // Define suggestionsList here
+  const stockSearchInput = document.getElementById('stock-search');
+  const resultsContainer = document.getElementById('search-results');
+  const whitelist = document.getElementById('whitelist');
   const registerBtn = document.getElementById('register-btn');
   const logoutBtn = document.getElementById('logout-btn');
+  const userNameInput = document.getElementById('user-name');
+  const userEmailInput = document.getElementById('user-email');
   const stockSearchSection = document.getElementById('stock-search-section');
   const logoutSection = document.getElementById('logout-section');
   const registrationSection = document.getElementById('registration-section');
   const whitelistSection = document.getElementById('whitelist-section');
-  const userNameInput = document.getElementById('user-name');
-  const userEmailInput = document.getElementById('user-email');
-  const stockSearchInput = document.getElementById('stock-search');
-  const resultsContainer = document.getElementById('search-results');
-  const suggestionsList = document.getElementById('suggestions-list');  // Fixed the variable name
 
   document.addEventListener('click', (event) => {
     if (!suggestionsList.contains(event.target) && event.target !== stockSearchInput) {
@@ -352,15 +354,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Search stock functionality
-  stockSearchInput.addEventListener('input', () => {
+ stockSearchInput.addEventListener('input', () => {
     const searchValue = stockSearchInput.value.trim().toLowerCase();
-    const filteredStocks = stocksData.filter(stock => 
+    const filteredStocks = stocksData.filter(stock =>
       (stock.Name?.toLowerCase() || '').includes(searchValue) ||
       (stock.Symbol?.toLowerCase() || '').includes(searchValue)
     );
-    displaySuggestions(filteredStocks);
+    displaySuggestions(filteredStocks); // Call the function to display suggestions
   });
 
-  // Initialize the UI with the registration form
+  // Initialize the UI
   showRegistrationForm();
 });
