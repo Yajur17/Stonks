@@ -137,7 +137,13 @@ function unwhitelistStock(symbol) {
         return response.json();
       })
       .then(() => {
-        loadWhitelistedStocksForUser(username);
+        // Remove the stock from the UI without re-fetching
+        const whitelist = document.getElementById('whitelist');
+        const stockItem = Array.from(whitelist.children).find(
+          li => li.textContent.includes(symbol)
+        );
+        if (stockItem) whitelist.removeChild(stockItem);
+
         alert(`Stock (${symbol}) has been removed from your whitelisted stocks.`);
       })
       .catch(error => {
@@ -198,16 +204,7 @@ function fetchStockDataForMultipleSymbols(stocks) {
     });
   }
 
-function loadWhitelistedStocksForUser(username) {
-  const user = getUser(username);
-  const whitelist = document.getElementById('whitelist');
-  whitelist.innerHTML = '';
 
-  user.whitelistedStocks.forEach(stock => {
-    const listItem = createWhitelistItem(stock.symbol, stock.name, stock.price, stock.date);
-    whitelist.appendChild(listItem);
-  });
-}
 
 async function fetchUserFromLambda(username) {
   try {
