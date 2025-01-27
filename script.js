@@ -5,85 +5,96 @@ const apiHost = 'latest-stock-price.p.rapidapi.com';
 
 let stocksData = [];
 
-// Fetch stock symbols and names
-fetch('symbol.json')
-  .then((response) => response.json())
-  .then((data) => {
-    stocksData = data;
+// Fetch stock symbols and names from symbol.json
+fetch('./symbol.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Failed to load stock symbols: ${response.statusText}`);
+    }
+    return response.json();
   })
-  .catch((error) => {
-    console.error("Failed to load stock data", error);
-  });
+  .then(data => {
+    stocksData = data;
+    console.log('Loaded Stocks Data:', stocksData); // Debugging
+  })
+  .catch(error => console.error('Error fetching stock symbols:', error));
+
 
 // Helper functions
-function displaySuggestions(stocks) {
-  const suggestionsList = document.getElementById('suggestions-list');
-  suggestionsList.innerHTML = '';
+ function displaySuggestions(filteredStocks) {
+const suggestionsList = document.getElementById('suggestions-list');  
+   if (!suggestionsList) return;
+   
+    suggestionsList.innerHTML = ''; // Clear previous suggestions
 
-  if (stocks.length === 0) {
-    suggestionsList.style.display = 'none';
-    return;
+    if (filteredStocks.length === 0) {
+      suggestionsList.innerHTML = '<li>No results found.</li>';
+      return;
+    }
+
+    filteredStocks.forEach(stock => {
+      const suggestionItem = document.createElement('li');
+      suggestionItem.textContent = `${stock.Name} (${stock.Symbol})`;
+      suggestionItem.onclick = () => {
+        fetchStockDataForMultipleSymbols([stock]);
+        suggestionsList.style.display = 'none'; // Close the suggestions after selecting
+      };
+      suggestionsList.appendChild(suggestionItem);
+    });
+
+    suggestionsList.style.display = 'block';  // Show suggestions
   }
 
-  stocks.forEach((stock) => {
-    const suggestionItem = document.createElement('li');
-    suggestionItem.textContent = `${stock.Symbol} - ${stock.Name}`;
-    suggestionItem.onclick = function () {
-      document.getElementById('stock-search').value = stock.Symbol;
-      suggestionsList.style.display = 'none';
-      fetchStockDataForMultipleSymbols([stock]);
-    };
-    suggestionsList.appendChild(suggestionItem);
-  });
-
-  suggestionsList.style.display = 'block';
-}
 
 function whitelistStock(symbol, name, price) {
   const username = document.getElementById('user-name').value.trim();
-  const user = getUser(username);
 
-  if (!user) {
-    alert('Please register first.');
-    return;
-  }
+  fetchUserFromLambda(username).then(user => {
+    if (!user) {
+      alert('Please register first.');
+      return;
+    }
 
-  if (!user.whitelistedStocks) {
-    user.whitelistedStocks = [];
-  }
+    if (!user.source.whitelistedStocks) {
+      user.source.whitelistedStocks = [];
+    }
 
-  const alreadyWhitelisted = user.whitelistedStocks.some(stock => stock.symbol === symbol);
-  if (alreadyWhitelisted) {
-    alert(`${name} (${symbol}) is already whitelisted.`);
-    return;
-  }
+    const alreadyWhitelisted = user.source.whitelistedStocks.some(stock => stock.symbol === symbol);
+    if (alreadyWhitelisted) {
+      alert(`${name} (${symbol}) is already whitelisted.`);
+      return;
+    }
 
-  const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  user.whitelistedStocks.push({ symbol, name, price, date });
+    const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    user.source.whitelistedStocks.push({ symbol, name, price, date });
 
-  // Update the user's data via Lambda
-  fetch(lambdaUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user),
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to update user data.');
-      }
-      return response.json();
+    // Update the user's data via Lambda
+    fetch(lambdaUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
     })
-    .then(() => {
-      const listItem = createWhitelistItem(symbol, name, price, date);
-      document.getElementById('whitelist').appendChild(listItem);
-      alert(`${name} (${symbol}) has been added to your whitelisted stocks!`);
-    })
-    .catch(error => {
-      console.error(error);
-      alert('Failed to update whitelist. Please try again.');
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to update user data.');
+        }
+        return response.json();
+      })
+      .then(() => {
+        const listItem = createWhitelistItem(symbol, name, price, date);
+        document.getElementById('whitelist').appendChild(listItem);
+        alert(`${name} (${symbol}) has been added to your whitelisted stocks!`);
+      })
+      .catch(error => {
+        console.error(error);
+        alert('Failed to update whitelist. Please try again.');
+      });
+  }).catch(error => {
+    console.error('Error fetching user:', error);
+    alert('Error fetching user. Please try again.');
+  });
 }
 
 window.whitelistStock = whitelistStock;
@@ -102,57 +113,67 @@ function createWhitelistItem(symbol, name, price, date) {
 
 function unwhitelistStock(symbol) {
   const username = document.getElementById('user-name').value.trim();
-  const user = getUser(username);
 
-  if (!user) {
-    alert('Please register first.');
-    return;
-  }
+  fetchUserFromLambda(username).then(user => {
+    if (!user) {
+      alert('Please register first.');
+      return;
+    }
 
-  user.whitelistedStocks = user.whitelistedStocks.filter(stock => stock.symbol !== symbol);
+    user.source.whitelistedStocks = user.source.whitelistedStocks.filter(stock => stock.symbol !== symbol);
 
-  // Update the user's data via Lambda
-  fetch(lambdaUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user),
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to update user data.');
-      }
-      return response.json();
+    // Update the user's data via Lambda
+    fetch(lambdaUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
     })
-    .then(() => {
-      loadWhitelistedStocksForUser(username);
-      alert(`Stock (${symbol}) has been removed from your whitelisted stocks.`);
-    })
-    .catch(error => {
-      console.error(error);
-      alert('Failed to update whitelist. Please try again.');
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to update user data.');
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Remove the stock from the UI without re-fetching
+        const whitelist = document.getElementById('whitelist');
+        const stockItem = Array.from(whitelist.children).find(
+          li => li.textContent.includes(symbol)
+        );
+        if (stockItem) whitelist.removeChild(stockItem);
+
+        alert(`Stock (${symbol}) has been removed from your whitelisted stocks.`);
+      })
+      .catch(error => {
+        console.error(error);
+        alert('Failed to update whitelist. Please try again.');
+      });
+  }).catch(error => {
+    console.error('Error fetching user:', error);
+    alert('Error fetching user. Please try again.');
+  });
 }
 
-
 function fetchStockDataForMultipleSymbols(stocks) {
-  const resultsContainer = document.getElementById('search-results');
-  resultsContainer.innerHTML = '';
+   const resultsContainer = document.getElementById('search-results');
 
-  const symbols = stocks.map(stock => stock.nse_symbol).join(',');
+   resultsContainer.innerHTML = '';
 
-  const url = `https://latest-stock-price.p.rapidapi.com/equities-enhanced?Symbols=${encodeURIComponent(symbols)}`;
+    const symbols = stocks.map(stock => stock.nse_symbol).join(',');
 
-  fetch(url, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'x-rapidapi-host': apiHost,
-      'x-rapidapi-key': apiKey,
-    },
-  })
+    const url = `https://latest-stock-price.p.rapidapi.com/equities-enhanced?Symbols=${encodeURIComponent(symbols)}`;
+
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'x-rapidapi-host': apiHost,
+        'x-rapidapi-key': apiKey,
+      },
+    })
     .then(response => {
       if (!response.ok) {
         throw new Error(`Error fetching stock data: ${response.statusText}`);
@@ -183,18 +204,7 @@ function fetchStockDataForMultipleSymbols(stocks) {
       console.error(error);
       resultsContainer.innerHTML = '<p>Failed to fetch stock data. Please try again later.</p>';
     });
-}
-
-function loadWhitelistedStocksForUser(username) {
-  const user = getUser(username);
-  const whitelist = document.getElementById('whitelist');
-  whitelist.innerHTML = '';
-
-  user.whitelistedStocks.forEach(stock => {
-    const listItem = createWhitelistItem(stock.symbol, stock.name, stock.price, stock.date);
-    whitelist.appendChild(listItem);
-  });
-}
+  }
 
 
 
@@ -223,7 +233,6 @@ async function fetchUserFromLambda(username) {
   }
 }
 
-
 // Register user in Lambda
 async function registerUserToLambda(userData) {
   try {
@@ -249,15 +258,24 @@ async function registerUserToLambda(userData) {
 
 // DOM interaction
 document.addEventListener('DOMContentLoaded', () => {
+const suggestionsList = document.getElementById('suggestions-list');  // Define suggestionsList here
+  const stockSearchInput = document.getElementById('stock-search');
+  const resultsContainer = document.getElementById('search-results');
+  const whitelist = document.getElementById('whitelist');
   const registerBtn = document.getElementById('register-btn');
   const logoutBtn = document.getElementById('logout-btn');
+  const userNameInput = document.getElementById('user-name');
+  const userEmailInput = document.getElementById('user-email');
   const stockSearchSection = document.getElementById('stock-search-section');
   const logoutSection = document.getElementById('logout-section');
   const registrationSection = document.getElementById('registration-section');
   const whitelistSection = document.getElementById('whitelist-section');
-  const userNameInput = document.getElementById('user-name');
-  const userEmailInput = document.getElementById('user-email');
-  const stockSearchInput = document.getElementById('stock-search');
+
+  document.addEventListener('click', (event) => {
+    if (!suggestionsList.contains(event.target) && event.target !== stockSearchInput) {
+      suggestionsList.style.display = 'none';
+    }
+  });
 
   // UI helper functions
   function showRegistrationForm() {
@@ -337,30 +355,16 @@ document.addEventListener('DOMContentLoaded', () => {
     return listItem;
   }
 
-  // Unwhitelist a stock
-  async function unwhitelistStock(symbol) {
-    const username = userNameInput.value.trim();
-    const user = await fetchUserFromLambda(username);
+  // Search stock functionality
+ stockSearchInput.addEventListener('input', () => {
+    const searchValue = stockSearchInput.value.trim().toLowerCase();
+    const filteredStocks = stocksData.filter(stock =>
+      (stock.Name?.toLowerCase() || '').includes(searchValue) ||
+      (stock.Symbol?.toLowerCase() || '').includes(searchValue)
+    );
+    displaySuggestions(filteredStocks); // Call the function to display suggestions
+  });
 
-    if (!user) {
-      alert('Please register first.');
-      return;
-    }
-
-    user.source.whitelistedStocks = user.source.whitelistedStocks.filter(stock => stock.symbol !== symbol);
-
-    const updateResult = await registerUserToLambda(user);
-    if (updateResult) {
-      alert(`${symbol} has been removed from your whitelist.`);
-      whitelist.innerHTML = ''; // Clear and reload whitelist
-      user.source.whitelistedStocks.forEach(stock => {
-        const listItem = createWhitelistItem(stock.symbol, stock.name, stock.price, stock.date);
-        whitelist.appendChild(listItem);
-      });
-    } else {
-      alert('Failed to update whitelist. Please try again.');
-    }
-  }
-
+  // Initialize the UI
   showRegistrationForm();
 });
