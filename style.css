@@ -151,6 +151,20 @@ h1 {
   color: #555;
 }
 
+#whitelist button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+#whitelist button:hover {
+  background-color: #c0392b;
+}
 /* Loading and No Results */
 .loading {
   text-align: center;
