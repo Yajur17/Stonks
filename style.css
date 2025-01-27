@@ -38,54 +38,50 @@ h1 {
 
 /* Style for the Stock Search Input */
 #stock-search {
-  width: 250px; /* Adjust the width of the input */
+  width: 250px;
   padding: 12px 20px;
   font-size: 16px;
-  border: 2px solid #4caf50; /* Border color */
-  border-radius: 25px; /* Rounded corners */
-  background: #f1f1f1; /* Light background */
+  border: 2px solid #4caf50;
+  border-radius: 25px;
+  background: #f1f1f1;
   transition: all 0.3s ease;
-  outline: none; /* Remove default outline */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  outline: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Focus effect */
 #stock-search:focus {
-  border-color: #8bc34a; /* Change border color when focused */
-  background: #e0f7fa; /* Light background on focus */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on focus */
+  border-color: #8bc34a;
+  background: #e0f7fa;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Placeholder styling */
 #stock-search::placeholder {
-  color: #9e9e9e; /* Placeholder color */
-  font-style: italic; /* Make the placeholder italic */
+  color: #9e9e9e;
+  font-style: italic;
 }
 
 #user-name, #user-email {
-  width: 250px; /* Adjust the width of the input */
+  width: 250px;
   padding: 12px 20px;
   font-size: 16px;
-  border: 2px solid #4caf50; /* Border color */
-  border-radius: 25px; /* Rounded corners */
-  background: #f1f1f1; /* Light background */
+  border: 2px solid #4caf50;
+  border-radius: 25px;
+  background: #f1f1f1;
   transition: all 0.3s ease;
-  outline: none; /* Remove default outline */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
-  margin-bottom: 10px; /* Add some space between inputs */
+  outline: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
 }
 
-/* Focus effect for User Registration Inputs */
 #user-name:focus, #user-email:focus {
-  border-color: #8bc34a; /* Change border color when focused */
-  background: #e0f7fa; /* Light background on focus */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on focus */
+  border-color: #8bc34a;
+  background: #e0f7fa;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Placeholder styling for User Registration Inputs */
 #user-name::placeholder, #user-email::placeholder {
-  color: #9e9e9e; /* Placeholder color */
-  font-style: italic; /* Make the placeholder italic */
+  color: #9e9e9e;
+  font-style: italic;
 }
 
 /* Search Results */
@@ -125,10 +121,17 @@ h1 {
   margin-top: 40px;
 }
 
+.whitelist-container {
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 #whitelist {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
 }
 
 #whitelist th, #whitelist td {
@@ -165,6 +168,7 @@ h1 {
 #whitelist button:hover {
   background-color: #c0392b;
 }
+
 /* Loading and No Results */
 .loading {
   text-align: center;
