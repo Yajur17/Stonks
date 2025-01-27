@@ -32,147 +32,313 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* Whitelist Section */
-#whitelist-section {
-  margin-top: 40px;
+.hidden {
+  display: none;
 }
 
-#whitelist-section h2 {
-  color: #2a75d3;
-  margin-bottom: 20px;
+/* Style for the Stock Search Input */
+#stock-search {
+  width: 250px; /* Adjust the width of the input */
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #4caf50; /* Border color */
+  border-radius: 25px; /* Rounded corners */
+  background: #f1f1f1; /* Light background */
+  transition: all 0.3s ease;
+  outline: none; /* Remove default outline */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
-#whitelist {
-  list-style-type: none;
-  padding: 0;
+/* Focus effect */
+#stock-search:focus {
+  border-color: #8bc34a; /* Change border color when focused */
+  background: #e0f7fa; /* Light background on focus */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on focus */
 }
 
-.whitelist-card {
-  background: #f9f9f9;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+/* Placeholder styling */
+#stock-search::placeholder {
+  color: #9e9e9e; /* Placeholder color */
+  font-style: italic; /* Make the placeholder italic */
+}
+
+
+#user-name, #user-email {
+  width: 250px; /* Adjust the width of the input */
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #4caf50; /* Border color */
+  border-radius: 25px; /* Rounded corners */
+  background: #f1f1f1; /* Light background */
+  transition: all 0.3s ease;
+  outline: none; /* Remove default outline */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  margin-bottom: 10px; /* Add some space between inputs */
+}
+
+/* Focus effect for User Registration Inputs */
+#user-name:focus, #user-email:focus {
+  border-color: #8bc34a; /* Change border color when focused */
+  background: #e0f7fa; /* Light background on focus */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on focus */
+}
+
+/* Placeholder styling for User Registration Inputs */
+#user-name::placeholder, #user-email::placeholder {
+  color: #9e9e9e; /* Placeholder color */
+  font-style: italic; /* Make the placeholder italic */
+}
+
+
+
+/* Search Results */
+#search-results {
+  margin-top: 20px;
+}
+
+.result-item {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: background-color 0.3s ease;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+  font-size: 1.1em;
 }
 
-.whitelist-card:hover {
-  background-color: #f1f1f1;
+.result-item span {
+  color: #333;
 }
 
-.whitelist-card .stock-info {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #555;
-}
-
-.whitelist-card .whitelisted-since {
-  font-size: 0.9em;
-  color: #888;
-}
-
-.whitelist-card .daily-change {
-  font-size: 1em;
-  font-weight: bold;
-}
-
-.whitelist-card .daily-change.positive {
-  color: #28a745;
-}
-
-.whitelist-card .daily-change.negative {
-  color: #e74c3c;
-}
-
-.whitelist-card .returns {
-  font-size: 1em;
-  font-weight: bold;
-}
-
-.whitelist-card .returns.positive {
-  color: #28a745;
-}
-
-.whitelist-card .returns.negative {
-  color: #e74c3c;
-}
-
-/* Buttons within the whitelist cards */
-.whitelist-card button {
-  background-color: #e74c3c;
+.result-item button {
+  background-color: #28a745;
   color: white;
   border: none;
   padding: 8px 15px;
   border-radius: 6px;
-  font-size: 0.9em;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.whitelist-card button:hover {
+.result-item button:hover {
+  background-color: #218838;
+}
+
+/* Whitelist Section */
+#whitelist-heading {
+  margin-top: 40px;
+}
+
+
+
+#whitelist h3 {
+  color: #2a75d3;
+  margin-bottom: 15px;
+}
+
+#whitelist ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#whitelist li {
+  background: #fafafa;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  color: #555;
+  transition: background-color 4.3s ease;
+}
+
+#whitelist li:hover {
+  background-color: #f1f1f1;
+}
+
+#whitelist li span {
+  font-size: 0.9em;
+  color: #777;
+  display: block;
+}
+
+/* Loading and No Results */
+.loading {
+  text-align: center;
+  font-size: 1.2em;
+  color: #999;
+}
+
+.no-results {
+  text-align: center;
+  color: #e74c3c;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* Existing Styles... */
+
+/* Whitelist Section */
+#whitelist {
+  margin-top: 40px;
+}
+
+#whitelist h3 {
+  color: #2a75d3;
+  margin-bottom: 15px;
+}
+
+#whitelist ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#whitelist li {
+  background: #fafafa;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  font-size: 1.1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #555;
+  transition: background-color 0.3s ease;
+}
+
+#whitelist li:hover {
+  background-color: #f1f1f1;
+}
+
+#whitelist li span {
+  font-size: 0.9em;
+  color: #777;
+  display: block;
+}
+
+#whitelist li .date-time {
+  font-size: 0.85em;
+  color: #999;
+}
+
+#whitelist li button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+#whitelist li button:hover {
   background-color: #c0392b;
 }
 
-/* Adjustments for inputs and buttons */
-#user-name, #user-email, #stock-search {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #4caf50;
-  border-radius: 25px;
-  background: #f1f1f1;
-  margin-bottom: 10px;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-#user-name:focus, #user-email:focus, #stock-search:focus {
-  border-color: #8bc34a;
-  background: #e0f7fa;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-#user-name::placeholder, #user-email::placeholder, #stock-search::placeholder {
-  color: #9e9e9e;
-  font-style: italic;
-}
-
-/* Buttons */
-#register-btn, #search-btn, #logout-btn {
-  background: linear-gradient(45deg, #4caf50, #8bc34a);
+#search-btn {
+  background: linear-gradient(45deg, #4caf50, #8bc34a); /* Gradient background */
   color: white;
   border: none;
-  border-radius: 25px;
+  border-radius: 25px; /* Rounded corners */
   padding: 12px 20px;
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
-#register-btn:hover, #search-btn:hover, #logout-btn:hover {
-  background: linear-gradient(45deg, #8bc34a, #4caf50);
-  transform: scale(1.05);
+#search-btn:hover {
+  background: linear-gradient(45deg, #8bc34a, #4caf50); /* Reversed gradient on hover */
+  transform: scale(1.05); /* Slight scale-up effect on hover */
 }
 
-#register-btn:active, #search-btn:active, #logout-btn:active {
-  transform: scale(0.98);
+#search-btn:focus {
+  outline: none; /* Remove default focus outline */
 }
 
-/* Suggestions Dropdown */
+#search-btn:active {
+  transform: scale(0.98); /* Slight scale-down effect on button click */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Darker shadow on click */
+}
+
+/* Style for the Register Button */
+#register-btn {
+  background: linear-gradient(45deg, #4caf50, #8bc34a); /* Gradient background */
+  color: white;
+  border: none;
+  border-radius: 25px; /* Rounded corners */
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  margin-top: 10px; /* Add some space above the button */
+}
+
+/* Hover effect for Register Button */
+#register-btn:hover {
+  background: linear-gradient(45deg, #8bc34a, #4caf50); /* Reversed gradient on hover */
+  transform: scale(1.05); /* Slight scale-up effect on hover */
+}
+
+/* Focus effect for Register Button */
+#register-btn:focus {
+  outline: none; /* Remove default focus outline */
+}
+
+/* Active effect for Register Button */
+#register-btn:active {
+  transform: scale(0.98); /* Slight scale-down effect on button click */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Darker shadow on click */
+}
+
+/* Style for the Logout Button */
+#logout-btn {
+  background: linear-gradient(45deg, #e74c3c, #c0392b); /* Gradient background */
+  color: white;
+  border: none;
+  border-radius: 25px; /* Rounded corners */
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+/* Hover effect for Logout Button */
+#logout-btn:hover {
+  background: linear-gradient(45deg, #c0392b, #e74c3c); /* Reversed gradient on hover */
+  transform: scale(1.05); /* Slight scale-up effect on hover */
+}
+
+/* Focus effect for Logout Button */
+#logout-btn:focus {
+  outline: none; /* Remove default focus outline */
+}
+
+/* Active effect for Logout Button */
+#logout-btn:active {
+  transform: scale(0.98); /* Slight scale-down effect on button click */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Darker shadow on click */
+}
+
+/* Style for the suggestion items */
 #suggestions-list {
   max-height: 200px;
   overflow-y: auto;
   border: 1px solid #ccc;
   background-color: white;
+  margin-top: 5px;
   padding: 0;
   position: absolute;
-  width: 100%;
+  width: 35%;
   z-index: 100;
 }
 
+/* Individual suggestion item styles */
 .suggestion-item {
   padding: 10px;
   cursor: pointer;
@@ -185,13 +351,15 @@ h1 {
   background-color: #f1f1f1;
 }
 
+/* Style for the whitelist button */
 .suggestion-item button {
-  background-color: #4caf50;
+  padding: 5px 10px;
+  font-size: 12px;
+  background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 5px 10px;
+  cursor: pointer;
   border-radius: 5px;
-  font-size: 0.8em;
 }
 
 .suggestion-item button:hover {
