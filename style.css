@@ -264,6 +264,21 @@ h1 {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Darker shadow on click */
 }
 
+/* Style for the Register Button */
+#register-btn {
+  background: linear-gradient(45deg, #4caf50, #8bc34a); /* Gradient background */
+  color: white;
+  border: none;
+  border-radius: 25px; /* Rounded corners */
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  margin-top: 10px; /* Add some space above the button */
+}
+
+/* Hover effect for Register Button */
 #register-btn:hover {
   background: linear-gradient(45deg, #8bc34a, #4caf50); /* Reversed gradient on hover */
   transform: scale(1.05); /* Slight scale-up effect on hover */
@@ -276,6 +291,36 @@ h1 {
 
 /* Active effect for Register Button */
 #register-btn:active {
+  transform: scale(0.98); /* Slight scale-down effect on button click */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Darker shadow on click */
+}
+
+/* Style for the Logout Button */
+#logout-btn {
+  background: linear-gradient(45deg, #e74c3c, #c0392b); /* Gradient background */
+  color: white;
+  border: none;
+  border-radius: 25px; /* Rounded corners */
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+/* Hover effect for Logout Button */
+#logout-btn:hover {
+  background: linear-gradient(45deg, #c0392b, #e74c3c); /* Reversed gradient on hover */
+  transform: scale(1.05); /* Slight scale-up effect on hover */
+}
+
+/* Focus effect for Logout Button */
+#logout-btn:focus {
+  outline: none; /* Remove default focus outline */
+}
+
+/* Active effect for Logout Button */
+#logout-btn:active {
   transform: scale(0.98); /* Slight scale-down effect on button click */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Darker shadow on click */
 }
